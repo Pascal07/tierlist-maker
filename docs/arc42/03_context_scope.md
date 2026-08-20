@@ -1,127 +1,63 @@
 # 3. Kontextabgrenzung
 
-<div class="formalpara-title">
-
-**Inhalt**
-
-</div>
-
-Die Kontextabgrenzung grenzt das System gegen alle Kommunikationspartner
-(Nachbarsysteme und Benutzerrollen) ab. Sie legt damit die externen
-Schnittstellen fest und zeigt damit auch die Verantwortlichkeit (scope)
-Ihres Systems: Welche Verantwortung trägt das System und welche
-Verantwortung übernehmen die Nachbarsysteme?
-
-Differenzieren Sie fachlichen (Ein- und Ausgaben) und technischen
-Kontext (Kanäle, Protokolle, Hardware), falls nötig.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Die fachlichen und technischen Schnittstellen zur Kommunikation gehören
-zu den kritischsten Aspekten eines Systems. Stellen Sie sicher, dass Sie
-diese komplett verstanden haben.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Verschiedene Optionen:
-
-- Diverse Kontextdiagramme
-
-- Listen von Kommunikationsbeziehungen mit deren Schnittstellen
-
-<div class="formalpara-title">
-
-**Weiterführende Informationen**
-
-</div>
-
-Siehe [Kontextabgrenzung](https://docs.arc42.org/section-3/) in der
-online-Dokumentation (auf Englisch!).
+Die Kontextabgrenzung grenzt den Tierlist Maker gegen alle
+Kommunikationspartner (Nutzer und Nachbarsysteme) ab und legt damit
+fest, welche Verantwortung das System selbst trägt und welche bei
+externen Systemen liegt.
 
 ## Fachlicher Kontext
 
-<div class="formalpara-title">
+```mermaid
+flowchart LR
+    User((Nutzer))
+    System[Tierlist Maker]
+    IGDB[IGDB / Twitch API]
 
-**Inhalt**
+    User -- "erstellt/bearbeitet Tierliste,\nsucht nach Spielen" --> System
+    System -- "zeigt Tierliste,\nzeigt Suchergebnisse" --> User
+    System -- "Suchanfrage (Spieltitel)" --> IGDB
+    IGDB -- "Spieledaten (Titel, Cover-Bild, Release-Jahr)" --> System
+```
 
-</div>
+| Kommunikationsbeziehung | Eingabe | Ausgabe |
+|---|---|---|
+| Nutzer ↔ Tierlist Maker | Suchbegriff für Spiele, Anordnung der Spiele in Tier-Stufen, Name/Titel der Tierlist | Dargestellte Suchergebnisse (Titel + Bild), fertige/gespeicherte Tierlist, Teilen-Link |
+| Tierlist Maker ↔ IGDB/Twitch API | Suchanfrage (Spieltitel), Authentifizierung (Client-ID/Access-Token) | Liste passender Spiele mit Titel, Cover-/Artwork-Bild-URL, Release-Jahr, IGDB-ID |
 
-Festlegung **aller** Kommunikationsbeziehungen (Nutzer, IT-Systeme, …​)
-mit Erklärung der fachlichen Ein- und Ausgabedaten oder Schnittstellen.
-Zusätzlich (bei Bedarf) fachliche Datenformate oder Protokolle der
-Kommunikation mit den Nachbarsystemen.
+**Erläuterung**: Der Nutzer interagiert ausschließlich mit dem Tierlist
+Maker – er sucht dort nach Spielen und ordnet sie per Drag & Drop in
+Tier-Stufen ein. Die eigentliche Spielsuche wird intern an IGDB
+weitergereicht; der Nutzer bekommt nur das Ergebnis (Titel + Bild)
+angezeigt und merkt im Idealfall nicht, dass eine externe API im
+Hintergrund arbeitet.
 
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Alle Beteiligten müssen verstehen, welche fachlichen Informationen mit
-der Umwelt ausgetauscht werden.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Alle Diagrammarten, die das System als Blackbox darstellen und die
-fachlichen Schnittstellen zu den Nachbarsystemen beschreiben.
-
-Alternativ oder ergänzend können Sie eine Tabelle verwenden. Der Titel
-gibt den Namen Ihres Systems wieder; die drei Spalten sind:
-Kommunikationsbeziehung, Eingabe, Ausgabe.
-
-**\<Diagramm und/oder Tabelle\>**
-
-**\<optional: Erläuterung der externen fachlichen Schnittstellen\>**
+*(TODO: falls später ein Teilen/Export-Feature dazukommt – z.B. Export
+als Bild oder öffentlicher Link – hier als weitere
+Kommunikationsbeziehung ergänzen.)*
 
 ## Technischer Kontext
 
-<div class="formalpara-title">
+```mermaid
+flowchart LR
+    Browser["Browser\n(Angular/React Frontend)"]
+    Backend["Backend\n(Java / Spring Boot)"]
+    IGDB["IGDB API\n(REST, JSON, via Twitch OAuth)"]
 
-**Inhalt**
+    Browser -- "HTTPS / REST (JSON)" --> Backend
+    Backend -- "HTTPS / REST (JSON)" --> IGDB
+```
 
-</div>
+| Technischer Kanal | Protokoll/Format | Fachliche Ein-/Ausgabe, die darüber fließt |
+|---|---|---|
+| Browser ↔ Backend | HTTPS, REST-API, JSON | Suchanfragen, Tierlisten-Daten (Anlegen, Bearbeiten, Speichern, Abrufen) |
+| Backend ↔ IGDB/Twitch API | HTTPS, REST-API, JSON, Twitch-OAuth (Client Credentials) | Spielsuche und Spieledaten (Titel, Bild-URL, Release-Jahr, IGDB-ID) |
 
-Technische Schnittstellen (Kanäle, Übertragungsmedien) zwischen dem
-System und seiner Umwelt. Zusätzlich eine Erklärung (*mapping*), welche
-fachlichen Ein- und Ausgaben über welche technischen Kanäle fließen.
+**Erläuterung**: Das Frontend kommuniziert ausschließlich mit dem
+eigenen Backend – nie direkt mit IGDB. Das Backend übernimmt die
+Authentifizierung gegenüber der Twitch-API (Client-ID/Secret bleiben
+serverseitig) und reicht Suchanfragen an IGDB weiter. Das schützt die
+API-Zugangsdaten und erlaubt es, z.B. später ein Caching der
+IGDB-Antworten im Backend einzubauen, ohne das Frontend anzupassen.
 
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Viele Stakeholder treffen Architekturentscheidungen auf Basis der
-technischen Schnittstellen des Systems zu seinem Kontext.
-
-Insbesondere bei der Entwicklung von Infrastruktur oder Hardware sind
-diese technischen Schnittstellen durchaus entscheidend.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Beispielsweise UML Deployment-Diagramme mit den Kanälen zu
-Nachbarsystemen, begleitet von einer Tabelle, die Kanäle auf
-Ein-/Ausgaben abbildet.
-
-**\<Diagramm oder Tabelle\>**
-
-**\<optional: Erläuterung der externen technischen Schnittstellen\>**
-
-**\<Mapping fachliche auf technische Schnittstellen\>**
-
+*(TODO: Frontend-Framework final festlegen – siehe Randbedingungen
+Kapitel 2 – und hier eintragen, sobald entschieden.)*

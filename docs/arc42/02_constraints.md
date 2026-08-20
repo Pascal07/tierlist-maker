@@ -1,45 +1,35 @@
 # 2. Randbedingungen
 
-<div class="formalpara-title">
+Randbedingungen und Vorgaben, die die Freiheiten bezüglich Entwurf,
+Implementierung und Entwicklungsprozess des Tierlist Makers einschränken.
 
-**Inhalt**
+## Technische Randbedingungen
 
-</div>
+| Randbedingung | Erläuterung |
+|---|---|
+| Backend: Java mit Spring (Boot) | Festgelegte Backend-Technologie. Beeinflusst u.a. Projektstruktur, Build-Tool (Maven/Gradle), REST-API-Design. |
+| Frontend: Angular *oder* React (noch offen) | Entscheidung steht noch aus. Solange offen, sollte das Backend über eine klar getrennte REST-API kommunizieren, damit die Wahl des Frontend-Frameworks die Architektur nicht beeinflusst. *(TODO: Entscheidung nachtragen, sobald getroffen – idealerweise früh, da sie z.B. State-Management und Component-Struktur festlegt.)* |
+| Abhängigkeit von der IGDB-API (Twitch-API) | Spielsuche und Bildmaterial werden extern über [IGDB](https://api-docs.igdb.com/) bezogen. Erfordert eine Twitch-Developer-App zur Authentifizierung (Client-ID/Secret), unterliegt den Rate-Limits und Nutzungsbedingungen von IGDB/Twitch. Das System ist damit von der Verfügbarkeit dieses Drittanbieters abhängig. |
+| Keine eigene Spiele-Datenbank (zunächst) | Spieledaten werden nicht dauerhaft repliziert, sondern bei Bedarf live über IGDB abgefragt bzw. nur die für eine Tierlist nötigen Daten (Titel, Bild-URL, IGDB-ID) gespeichert. |
+| Hosting noch nicht entschieden | Es gibt noch keine Festlegung auf einen konkreten Hosting-Anbieter oder eigenen Server. *(TODO: nachtragen, sobald entschieden – beeinflusst z.B. ob Backend "always-on" laufen kann oder mit Cold-Starts umgehen muss.)* |
 
-Randbedingungen und Vorgaben, die ihre Freiheiten bezüglich Entwurf,
-Implementierung oder Ihres Entwicklungsprozesses einschränken. Diese
-Randbedingungen gelten manchmal organisations- oder firmenweit über die
-Grenzen einzelner Systeme hinweg.
+## Organisatorische Randbedingungen
 
-<div class="formalpara-title">
+| Randbedingung | Erläuterung |
+|---|---|
+| Ein-Personen-Hobbyprojekt | Entwicklung erfolgt allein, nebenbei, ohne festes Team oder festen Zeitplan. Das begrenzt verfügbare Zeit und spricht für pragmatische, einfach zu wartende Lösungen statt Over-Engineering. |
+| Kein fester Termin / Release-Druck | Es gibt keine externe Deadline. Prioritäten können sich im Projektverlauf verschieben. |
+| Nutzung kostenloser bzw. kostengünstiger Dienste | Als Hobbyprojekt sollten wo möglich Free-Tier-Angebote genutzt werden (Hosting, ggf. Datenbank), um laufende Kosten gering zu halten. |
 
-**Motivation**
+## Politische / rechtliche Randbedingungen
 
-</div>
+| Randbedingung | Erläuterung |
+|---|---|
+| Einhaltung der IGDB/Twitch API-Nutzungsbedingungen | Insbesondere Attribution der Datenquelle sowie Einhaltung der Rate-Limits sind Pflicht, nicht optional. |
+| Urheberrecht an Spiele-Assets | Cover-Bilder/Artworks stammen von Drittanbietern (Publishern) und werden nur über die IGDB-API referenziert/angezeigt, nicht selbst erstellt oder frei weiterverwendet. |
 
-Für eine tragfähige Architektur sollten Sie genau wissen, wo Ihre
-Freiheitsgrade bezüglich der Entwurfsentscheidungen liegen und wo Sie
-Randbedingungen beachten müssen. Sie können Randbedingungen vielleicht
-noch verhandeln, zunächst sind sie aber da.
+## Konventionen
 
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Einfache Tabellen der Randbedingungen mit Erläuterungen. Bei Bedarf
-unterscheiden Sie technische, organisatorische und politische
-Randbedingungen oder übergreifende Konventionen (beispielsweise
-Programmier- oder Versionierungsrichtlinien, Dokumentations- oder
-Namenskonvention).
-
-<div class="formalpara-title">
-
-**Weiterführende Informationen**
-
-</div>
-
-Siehe [Randbedingungen](https://docs.arc42.org/section-2/) in der
-online-Dokumentation (auf Englisch!).
-
+*(TODO: sobald festgelegt, hier ergänzen, z.B. Code-Style-Guide,
+Commit-Message-Konvention, Branching-Modell – bei einem Solo-Projekt
+reicht oft eine einfache, für dich selbst nachvollziehbare Konvention.)*

@@ -4,148 +4,61 @@ Beschreibt die wesentlichen Anforderungen und treibenden Kräfte, die bei
 der Umsetzung der Softwarearchitektur und Entwicklung des Systems
 berücksichtigt werden müssen.
 
-Dazu gehören:
-
-- zugrunde liegende Geschäftsziele,
-
-- wesentliche Aufgabenstellungen,
-
-- wesentliche funktionale Anforderungen,
-
-- Qualitätsziele für die Architektur und
-
-- relevante Stakeholder und deren Erwartungshaltung.
-
 ## Aufgabenstellung
 
-<div class="formalpara-title">
+Tierlist Maker ist eine Webanwendung, mit der Nutzer einfach und schnell
+Tierlisten (Rankings) zu beliebigen Themen erstellen können – z.B.
+"Best Games of the Year", "Beste Konsolen aller Zeiten" o.ä.
 
-**Inhalt**
+Im Gegensatz zu bestehenden Tierlist-Tools müssen Nutzer keine Bilder
+manuell suchen, screenshotten und hochladen. Stattdessen wird die
+[IGDB](https://www.igdb.com/) (Internet Game Database) API angebunden:
+Nutzer können Spiele direkt über eine Suche finden, und Titel sowie
+Cover-/Artwork-Bild werden automatisch übernommen.
 
-</div>
+Kernfunktionen (MVP):
 
-Kurzbeschreibung der fachlichen Aufgabenstellung, treibenden Kräfte,
-Extrakt (oder Abstract) der Anforderungen. Verweis auf (hoffentlich
-vorliegende) Anforderungsdokumente (mit Versionsbezeichnungen und
-Ablageorten).
+- Erstellen einer neuen Tierlist mit frei definierbaren Tier-Stufen
+  (z.B. S, A, B, C, D)
+- Suche nach Spielen über die IGDB-Datenbank (Titel, Cover-Bild,
+  Release-Jahr)
+- Hinzufügen gefundener Spiele per Drag & Drop in die gewünschte Stufe
+- Speichern / Teilen der fertigen Tierlist
 
-<div class="formalpara-title">
+*(Optional/später: weitere Kategorien über IGDB hinaus, Export als
+Bild, Teilen-Link, eigene Uploads als Fallback)*
 
-**Motivation**
+**Motivation**: Der eigentliche Beweggrund ist, den größten
+Reibungspunkt bestehender Tierlist-Maker zu beseitigen – das mühsame
+manuelle Beschaffen von Bildmaterial. Durch die IGDB-Anbindung wird die
+Erstellung einer Gaming-Tierlist auf wenige Klicks reduziert.
 
-</div>
-
-Aus Sicht der späteren Nutzung ist die Unterstützung einer fachlichen
-Aufgabe oder Verbesserung der Qualität der eigentliche Beweggrund, ein
-neues System zu schaffen oder ein bestehendes zu modifizieren.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Kurze textuelle Beschreibung, eventuell in tabellarischer Use-Case Form.
-Sofern vorhanden, sollte die Aufgabenstellung Verweise auf die
-entsprechenden Anforderungsdokumente enthalten.
-
-Halten Sie diese Auszüge so knapp wie möglich und wägen Sie Lesbarkeit
-und Redundanzfreiheit gegeneinander ab.
-
-<div class="formalpara-title">
-
-**Weiterführende Informationen**
-
-</div>
-
-Siehe [Anforderungen und Ziele](https://docs.arc42.org/section-1/) in
-der online-Dokumentation (auf Englisch!).
+*(TODO: Verweis auf ggf. vorhandene weitere Anforderungsdokumente
+ergänzen, falls vorhanden.)*
 
 ## Qualitätsziele
 
-<div class="formalpara-title">
+| Priorität | Qualitätsziel | Szenario |
+|---|---|---|
+| 1 | **Benutzerfreundlichkeit** | Ein neuer Nutzer kann ohne Anleitung innerhalb weniger Minuten eine erste Tierlist mit mind. 5 Spielen erstellen. |
+| 2 | **Performance der Suche** | Eine IGDB-Suchanfrage liefert Ergebnisse (inkl. Bild) in unter 1 Sekunde bei normaler Internetverbindung. |
+| 3 | **Zuverlässigkeit der externen Anbindung** | Bei Nichterreichbarkeit der IGDB-API erhält der Nutzer eine verständliche Fehlermeldung statt eines Absturzes; bestehende, bereits geladene Tierlisten bleiben nutzbar. |
+| 4 | **Wartbarkeit** | Neue Kategorien (z.B. Filme, Musik über andere APIs) sollen sich mit überschaubarem Aufwand ergänzen lassen. |
+| 5 | **Portabilität / Zugänglichkeit** | Die Anwendung funktioniert im Browser auf Desktop und mobil, ohne Installation. |
 
-**Inhalt**
-
-</div>
-
-Die Top-3 bis Top-5 der Qualitätsanforderungen für die Architektur,
-deren Erfüllung oder Einhaltung den maßgeblichen Stakeholdern besonders
-wichtig sind. Gemeint sind hier wirklich Qualitätsziele, die nicht
-unbedingt mit den Zielen des Projekts übereinstimmen. Beachten Sie den
-Unterschied.
-
-Hier ein Überblick möglicher Themen (basierend auf dem ISO 25010
-Standard):
-
-<figure>
-<img src="images/01_2_iso-25010-topics-DE.drawio.png"
-alt="Kategorien von Qualitätsanforderungen" />
-</figure>
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Weil Qualitätsziele grundlegende Architekturentscheidungen oft
-maßgeblich beeinflussen, sollten Sie die für Ihre Stakeholder relevanten
-Qualitätsziele kennen, möglichst konkret und operationalisierbar.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Tabellarische Darstellung der Qualitätsziele mit möglichst konkreten
-Szenarien, geordnet nach Prioritäten.
+*(TODO: Prioritäten ggf. anpassen, sobald klar ist, was dir für den
+ersten Release am wichtigsten ist – z.B. eher Speed of Development als
+volle Robustheit, wenn es zunächst nur ein Hobbyprojekt für dich selbst
+ist.)*
 
 ## Stakeholder
 
-<div class="formalpara-title">
+| Rolle | Kontakt | Erwartungshaltung |
+|---|---|---|
+| Entwickler (Pascal) | Projektinhaber | Klare, wartbare Architektur; Projekt soll trotz begrenzter Zeit voranschreiten; Lernziel arc42/Architekturdokumentation. |
+| Nutzer / Gamer | – | Einfache, schnelle Erstellung von Tierlisten ohne manuellen Bildaufwand; intuitive Bedienung. |
+| IGDB / Twitch API (externer Dienst) | [api-docs.igdb.com](https://api-docs.igdb.com/) | Einhaltung der API-Nutzungsbedingungen und Rate-Limits; korrekte Attribution der Datenquelle. |
 
-**Inhalt**
-
-</div>
-
-Expliziter Überblick über die Stakeholder des Systems – über alle
-Personen, Rollen oder Organisationen –, die
-
-- die Architektur kennen sollten oder
-
-- von der Architektur überzeugt werden müssen,
-
-- mit der Architektur oder dem Code arbeiten (z.B. Schnittstellen
-  nutzen),
-
-- die Dokumentation der Architektur für ihre eigene Arbeit benötigen,
-
-- Entscheidungen über das System und dessen Entwicklung treffen.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Sie sollten die Projektbeteiligten und -betroffenen kennen, sonst
-erleben Sie später im Entwicklungsprozess Überraschungen. Diese
-Stakeholder bestimmen unter anderem Umfang und Detaillierungsgrad der
-von Ihnen zu leistenden Arbeit und Ergebnisse.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Tabelle mit Rollen- oder Personennamen, sowie deren Erwartungshaltung
-bezüglich der Architektur und deren Dokumentation.
-
-| Rolle         | Kontakt         | Erwartungshaltung |
-|---------------|-----------------|-------------------|
-| *\<Rolle-1\>* | *\<Kontakt-1\>* | *\<Erwartung-1\>* |
-| *\<Rolle-2\>* | *\<Kontakt-2\>* | *\<Erwartung-2\>* |
-
+*(TODO: weitere Stakeholder ergänzen, sobald relevant, z.B. falls das
+Projekt später öffentlich betrieben wird – dann evtl. Hosting-Provider,
+ggf. Mitentwickler.)*

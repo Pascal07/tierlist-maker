@@ -1,214 +1,101 @@
 # 5. Bausteinsicht
 
-<div class="formalpara-title">
-
-**Inhalt**
-
-</div>
-
-Die Bausteinsicht zeigt die statische Zerlegung des Systems in Bausteine
-(Module, Komponenten, Subsysteme, Klassen, Schnittstellen, Pakete,
-Bibliotheken, Frameworks, Schichten, Partitionen, Tiers, Funktionen,
-Makros, Operationen, Datenstrukturen, …​) sowie deren Abhängigkeiten
-(Beziehungen, Assoziationen, …​)
-
-Diese Sicht sollte in jeder Architekturdokumentation vorhanden sein. In
-der Analogie zum Hausbau bildet die Bausteinsicht den *Grundrissplan*.
-
-<div class="formalpara-title">
-
-**Motivation**
-
-</div>
-
-Behalten Sie den Überblick über den Quellcode, indem Sie die statische
-Struktur des Systems durch Abstraktion verständlich machen.
-
-Damit ermöglichen Sie Kommunikation auf abstrakterer Ebene, ohne zu
-viele Implementierungsdetails offenlegen zu müssen.
-
-<div class="formalpara-title">
-
-**Form**
-
-</div>
-
-Die Bausteinsicht ist eine hierarchische Sammlung von Blackboxen und
-Whiteboxen (siehe Abbildung unten) und deren Beschreibungen.
-
-<figure>
-<img src="images/05_building_blocks-DE.png"
-alt="Hierarchie in der Bausteinsicht" />
-</figure>
-
-**Ebene 1** ist die Whitebox-Beschreibung des Gesamtsystems, zusammen
-mit Blackbox-Beschreibungen der darin enthaltenen Bausteine.
-
-**Ebene 2** zoomt in einige Bausteine der Ebene 1 hinein. Sie enthält
-somit die Whitebox-Beschreibungen ausgewählter Bausteine der Ebene 1,
-jeweils zusammen mit Blackbox-Beschreibungen darin enthaltener
-Bausteine.
-
-**Ebene 3** zoomt in einige Bausteine der Ebene 2 hinein, usw.
-
-<div class="formalpara-title">
-
-**Weiterführende Informationen**
-
-</div>
-
-Siehe [Bausteinsicht](https://docs.arc42.org/section-5/) in der
-online-Dokumentation (auf Englisch!).
+Die Bausteinsicht zeigt die statische Zerlegung des Tierlist Makers in
+Bausteine und deren Abhängigkeiten, ausgehend von der in Kapitel 4
+beschriebenen Client-Server-Architektur mit intern SOA-strukturiertem
+Backend.
 
 ## Whitebox Gesamtsystem
 
-An dieser Stelle beschreiben Sie die Zerlegung des Gesamtsystems anhand
-des nachfolgenden Whitebox-Templates. Dieses enthält:
+```mermaid
+flowchart LR
+    Frontend["Frontend\n(SPA, Angular/React)"]
+    Backend["Backend\n(Spring Boot, ein Deployment)"]
+    IGDB["IGDB / Twitch API\n(extern)"]
 
-- Ein Übersichtsdiagramm
+    Frontend -- "REST/JSON (HTTPS)" --> Backend
+    Backend -- "REST/JSON (HTTPS)" --> IGDB
+```
 
-- die Begründung dieser Zerlegung
+**Begründung**: Die Zerlegung in Ebene 1 folgt direkt der
+Client-Server-Aufteilung aus Kapitel 4 – Frontend und Backend sind
+unabhängig voneinander entwickel- und austauschbar (z.B. Wechsel
+Angular ↔ React), solange die REST-Schnittstelle stabil bleibt.
 
-- Blackbox-Beschreibungen der hier enthaltenen Bausteine. Dafür haben
-  Sie verschiedene Optionen:
+**Enthaltene Bausteine**
 
-  - in *einer* Tabelle, gibt einen kurzen und pragmatischen Überblick
-    über die enthaltenen Bausteine sowie deren Schnittstellen.
+| Name | Verantwortung |
+|---|---|
+| Frontend | Darstellung der Tierlisten, Suche/Anzeige von Spielen, Drag & Drop der Einträge in Tier-Stufen; kommuniziert ausschließlich mit dem Backend. |
+| Backend | Stellt die REST-API für das Frontend bereit; verwaltet Tierlisten-Daten; kapselt die Kommunikation mit IGDB. Läuft als ein einziges Deployment, intern in Services gegliedert (siehe Ebene 2). |
 
-  - als Liste von Blackbox-Beschreibungen der Bausteine, gemäß dem
-    Blackbox-Template (siehe unten). Diese Liste können Sie, je nach
-    Werkzeug, etwa in Form von Unterkapiteln (Text), Unter-Seiten (Wiki)
-    oder geschachtelten Elementen (Modellierungswerkzeug) darstellen.
+**Wichtige Schnittstellen**
 
-- (optional:) wichtige Schnittstellen, die nicht bereits im
-  Blackbox-Template eines der Bausteine erläutert werden, aber für das
-  Verständnis der Whitebox von zentraler Bedeutung sind. Aufgrund der
-  vielfältigen Möglichkeiten oder Ausprägungen von Schnittstellen geben
-  wir hierzu kein weiteres Template vor. Im schlimmsten Fall müssen Sie
-  Syntax, Semantik, Protokolle, Fehlerverhalten, Restriktionen,
-  Versionen, Qualitätseigenschaften, notwendige Kompatibilitäten und
-  vieles mehr spezifizieren oder beschreiben. Im besten Fall kommen Sie
-  mit Beispielen oder einfachen Signaturen zurecht.
-
-***\<Übersichtsdiagramm\>***
-
-Begründung  
-*\<Erläuternder Text\>*
-
-Enthaltene Bausteine  
-*\<Beschreibung der enthaltenen Bausteine (Blackboxen)\>*
-
-Wichtige Schnittstellen  
-*\<Beschreibung wichtiger Schnittstellen\>*
-
-Hier folgen jetzt Erläuterungen zu Blackboxen der Ebene 1.
-
-Falls Sie die tabellarische Beschreibung wählen, so werden Blackboxen
-darin nur mit Name und Verantwortung nach folgendem Muster beschrieben:
-
-| **Name**         | **Verantwortung** |
-|------------------|-------------------|
-| *\<Blackbox 1\>* |  *\<Text\>*       |
-| *\<Blackbox 2\>* |  *\<Text\>*       |
-
-Falls Sie die ausführliche Liste von Blackbox-Beschreibungen wählen,
-beschreiben Sie jede wichtige Blackbox in einem eigenen
-Blackbox-Template. Dessen Überschrift ist jeweils der Namen dieser
-Blackbox.
-
-### \<Name Blackbox 1\>
-
-Beschreiben Sie die \<Blackbox 1\> anhand des folgenden
-Blackbox-Templates:
-
-- Zweck/Verantwortung
-
-- Schnittstelle(n), sofern diese nicht als eigenständige Beschreibungen
-  herausgezogen sind. Hierzu gehören eventuell auch Qualitäts- und
-  Leistungsmerkmale dieser Schnittstelle.
-
-- (Optional) Qualitäts-/Leistungsmerkmale der Blackbox, beispielsweise
-  Verfügbarkeit, Laufzeitverhalten o. Ä.
-
-- (Optional) Ablageort/Datei(en)
-
-- (Optional) Erfüllte Anforderungen, falls Sie Traceability zu
-  Anforderungen benötigen.
-
-- (Optional) Offene Punkte/Probleme/Risiken
-
-*\<Zweck/Verantwortung\>*
-
-*\<Schnittstelle(n)\>*
-
-*\<(Optional) Qualitäts-/Leistungsmerkmale\>*
-
-*\<(Optional) Ablageort/Datei(en)\>*
-
-*\<(Optional) Erfüllte Anforderungen\>*
-
-*\<(optional) Offene Punkte/Probleme/Risiken\>*
-
-### \<Name Blackbox 2\>
-
-*\<Blackbox-Template\>*
-
-### \<Name Blackbox n\>
-
-*\<Blackbox-Template\>*
-
-### \<Name Schnittstelle 1\>
-
-…​
-
-### \<Name Schnittstelle m\>
+| Schnittstelle | Beschreibung |
+|---|---|
+| Backend-REST-API (Frontend ↔ Backend) | JSON über HTTPS; Endpunkte u.a. zum Suchen von Spielen, Anlegen/Bearbeiten/Abrufen von Tierlisten. |
+| IGDB-API (Backend ↔ IGDB) | Externe REST-API von IGDB/Twitch; Details siehe Kapitel 3 (Kontextabgrenzung). |
 
 ## Ebene 2
 
-Beschreiben Sie den inneren Aufbau (einiger) Bausteine aus Ebene 1 als
-Whitebox.
+Da das Frontend noch nicht final festgelegt ist (Angular oder React,
+siehe Kapitel 2) und intern weitgehend Standardaufbau eines SPA-
+Frameworks hat, wird an dieser Stelle nur das **Backend** als
+komplexerer und architekturell relevanterer Baustein vertieft.
 
-Welche Bausteine Ihres Systems Sie hier beschreiben, müssen Sie selbst
-entscheiden. Bitte stellen Sie dabei Relevanz vor Vollständigkeit.
-Skizzieren Sie wichtige, überraschende, riskante, komplexe oder
-besonders volatile Bausteine. Normale, einfache oder standardisierte
-Teile sollten Sie weglassen.
+### Whitebox *Backend*
 
-### Whitebox *\<Baustein 1\>*
+```mermaid
+flowchart TB
+    subgraph Backend["Backend (Spring Boot – ein Deployment)"]
+        Controller["REST-Controller\n(API-Schicht)"]
+        TierlistService["Tierlist-Service"]
+        IgdbService["IGDB-Integration-Service"]
+        Repo["Tierlist-Repository\n(Persistenz)"]
+        DB[("Datenbank")]
+    end
+    IGDBExt["IGDB / Twitch API (extern)"]
 
-…​zeigt das Innenleben von *Baustein 1*.
+    Controller --> TierlistService
+    Controller --> IgdbService
+    TierlistService --> Repo
+    Repo --> DB
+    IgdbService --> IGDBExt
+```
 
-*\<Whitebox-Template\>*
+**Begründung**: Innerhalb des Backends folgt die Zerlegung dem in
+Kapitel 4 festgelegten SOA-Ansatz: Die beiden fachlichen
+Kernverantwortlichkeiten (Tierlisten-Verwaltung und externe
+Datenbeschaffung über IGDB) sind als eigene Services gekapselt und nur
+über klar definierte Schnittstellen (Java-Interfaces) erreichbar, auch
+wenn alles im selben Prozess/Deployment läuft.
 
-### Whitebox *\<Baustein 2\>*
+**Enthaltene Bausteine**
 
-*\<Whitebox-Template\>*
+| Name | Verantwortung |
+|---|---|
+| REST-Controller | Nimmt HTTP-Anfragen vom Frontend entgegen, validiert Eingaben, delegiert an den passenden Service, formt die Antwort als JSON. |
+| Tierlist-Service | Fachlogik rund um Tierlisten: Anlegen, Bearbeiten, Speichern, Abrufen von Tierlisten inkl. Tier-Stufen und Einträgen. |
+| IGDB-Integration-Service | Kapselt Authentifizierung und Kommunikation mit der externen IGDB/Twitch-API; bietet eine eigene, von IGDB unabhängige Such-Schnittstelle an; übernimmt optional Caching von Suchergebnissen. |
+| Tierlist-Repository | Persistenzschicht für Tierlisten-Daten (z.B. via Spring Data), kapselt Datenbankzugriffe. |
+| Datenbank | Speichert Tierlisten, Tier-Stufen und referenzierte Spiele-Einträge (Titel, IGDB-ID, Bild-URL) dauerhaft. |
 
-…​
+**Wichtige Schnittstellen**
 
-### Whitebox *\<Baustein m\>*
+| Schnittstelle | Beschreibung |
+|---|---|
+| Tierlist-Service-Interface | Internes Java-Interface, über das der REST-Controller Tierlisten-Operationen aufruft; kein Netzwerkaufruf, direkter In-Process-Methodenaufruf. |
+| IGDB-Integration-Service-Interface | Internes Java-Interface für Spielsuche; verbirgt vor dem restlichen Backend, dass die Daten von IGDB stammen – ermöglicht späteren Austausch/Erweiterung der Datenquelle (siehe Kapitel 4, Wartbarkeit). |
 
-*\<Whitebox-Template\>*
+*(TODO: sobald Persistenz-Technologie feststeht – z.B. PostgreSQL,
+H2 für lokale Entwicklung – hier ergänzen. TODO: sobald Frontend-
+Framework feststeht, ggf. Ebene 2 für das Frontend ergänzen, falls dort
+relevante/komplexe Struktur entsteht, z.B. State-Management für die
+Drag&Drop-Tier-Liste.)*
 
 ## Ebene 3
 
-Beschreiben Sie den inneren Aufbau (einiger) Bausteine aus Ebene 2 als
-Whitebox.
-
-Bei tieferen Gliederungen der Architektur kopieren Sie diesen Teil von
-arc42 für die weiteren Ebenen.
-
-### Whitebox \<\_Baustein x.1\_\>
-
-…​zeigt das Innenleben von *Baustein x.1*.
-
-*\<Whitebox-Template\>*
-
-### Whitebox \<\_Baustein x.2\_\>
-
-*\<Whitebox-Template\>*
-
-### Whitebox \<\_Baustein y.1\_\>
-
-*\<Whitebox-Template\>*
-
+Noch nicht relevant – wird ergänzt, sobald einzelne Bausteine aus
+Ebene 2 (z.B. der IGDB-Integration-Service mit Caching-Logik) so
+komplex werden, dass eine weitere Vertiefung sinnvollen Mehrwert
+bietet.
